@@ -458,11 +458,47 @@ export default function CreateFamiliar() {
                                             <FormLabel>Cantidad</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    type="number"
-                                                    placeholder="0"
+                                                    type="text"
+                                                    placeholder="0.00"
                                                     className="bg-white border-muted-tan-300"
                                                     {...field}
-                                                    onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : 0)}
+                                                    value={field.value === 0 ? '' : field.value.toString()}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value
+                                                        // Only allow numbers, decimal point, and empty string
+                                                        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                                                            if (value === '' || value === '.') {
+                                                                field.onChange(0)
+                                                            } else {
+                                                                const numValue = parseFloat(value)
+                                                                field.onChange(isNaN(numValue) ? 0 : numValue)
+                                                            }
+                                                        }
+                                                        // If invalid characters, don't update the field (reject the input)
+                                                    }}
+                                                                                                        onKeyDown={(e) => {
+                                                        // Allow: backspace, delete, tab, escape, enter
+                                                        if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                                                            // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                                                            (e.keyCode === 65 && e.ctrlKey === true) ||
+                                                            (e.keyCode === 67 && e.ctrlKey === true) ||
+                                                            (e.keyCode === 86 && e.ctrlKey === true) ||
+                                                            (e.keyCode === 88 && e.ctrlKey === true)) {
+                                                            return
+                                                        }
+                                                        // Ensure that it is a number or decimal point and stop the keypress
+                                                        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && 
+                                                            (e.keyCode < 96 || e.keyCode > 105) && 
+                                                            e.keyCode !== 190 && e.keyCode !== 110) {
+                                                            e.preventDefault()
+                                                        }
+                                                        // Only allow one decimal point
+                                                        const target = e.target as HTMLInputElement
+                                                        if ((e.keyCode === 190 || e.keyCode === 110) && 
+                                                            target.value.indexOf('.') !== -1) {
+                                                            e.preventDefault()
+                                                        }
+                                                    }}
                                                 />
                                             </FormControl>
                                             <FormMessage />

@@ -488,7 +488,7 @@ export default function GradosPage() {
                         <Button
                             variant="destructive"
                             onClick={confirmDeleteGrado}
-                            disabled={deleteDialog.isDeleting || (deleteDialog.grado?.total_alumnos && deleteDialog.grado.total_alumnos > 0 && !deleteDialog.forceDelete)}
+                            disabled={deleteDialog.isDeleting || ((deleteDialog.grado?.total_alumnos ?? 0) > 0 && !deleteDialog.forceDelete)}
                             className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md disabled:bg-red-400"
                         >
                             {deleteDialog.isDeleting ? (

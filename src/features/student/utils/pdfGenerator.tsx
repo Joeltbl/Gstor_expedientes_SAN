@@ -100,11 +100,13 @@ const StudentReportDocument: React.FC<{ student: AlumnoWithFamiliar }> = ({ stud
         });
     };
 
-    const getGradeText = (grado?: number) => {
-        if (!grado) return 'No especificado';
-        if (grado <= 5) return `${grado}° Primaria`;
-        if (grado <= 11) return `${grado}° Bachillerato`;
-        return `Grado ${grado}`;
+    const getGradeText = (student: AlumnoWithFamiliar) => {
+        // @ts-ignore - Supabase returns grado as joined object
+        if (student.grado?.nombre_grado) {
+            // @ts-ignore
+            return student.grado.nombre_grado;
+        }
+        return 'No especificado';
     };
 
     const getStatusBadgeStyle = (situacion_actual?: string) => {
@@ -160,7 +162,7 @@ const StudentReportDocument: React.FC<{ student: AlumnoWithFamiliar }> = ({ stud
 
                     <View style={styles.row}>
                         <Text style={styles.label}>Grado Actual:</Text>
-                        <Text style={styles.value}>{getGradeText(student.grado_alumno)}</Text>
+                        <Text style={styles.value}>{getGradeText(student)}</Text>
                     </View>
 
                     <View style={styles.row}>
